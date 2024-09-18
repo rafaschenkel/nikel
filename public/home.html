@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nikel - Home</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body id="home">
+    <header>
+      <nav class="navbar navbar-expand">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"
+            ><img
+              src="./assets/images/nikel-small-logo.png"
+              alt="nikel logo"
+              srcset=""
+              class="img-fluid"
+          /></a>
+
+          <div class="d-flex">
+            <a href="home.html">
+              <button class="btn" type="button">
+                <i class="bi bi-house-door-fill fs-4 color-secondary"></i>
+              </button>
+            </a>
+
+            <a href="transactions.html">
+              <button class="btn" type="button">
+                <i class="bi bi-currency-exchange fs-4"></i>
+              </button>
+            </a>
+
+            <div class="dropdown">
+              <button
+                class="btn"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-person-circle fs-4"></i>
+              </button>
+              <ul class="dropdown-menu" id="menu">
+                <li>
+                  <button class="dropdown-item" id="button-logout">Sair</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container-lg">
+        <div class="row d-flex align-items-center mt-5">
+          <div class="col justify-content-start">
+            <div class="d-flex align-items-center gap-3">
+              <i class="bi bi-cash-coin info-icon color-primary"></i>
+              <p id="total" class="fs-1 fw-medium">R$ 0,00</p>
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end">
+            <div>
+              <img
+                src="./assets/images/coins-small.png"
+                alt="image coins"
+                srcset=""
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 shadow-lg bg-white rounded-top-4 py-3">
+            <div class="container">
+              <div class="row">
+                <div
+                  class="col-6 fs-3 fw-medium d-flex align-items-center gap-2"
+                >
+                  <span>Entradas</span>
+                  <i class="bi bi-arrow-down-circle fs-2"></i>
+                </div>
+                <div
+                  class="col-6 fs-3 fw-medium d-flex align-items-center gap-2"
+                >
+                  <span>Saídas</span>
+                  <i class="bi bi-arrow-up-circle fs-2"></i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <hr />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 px-0">
+                  <div
+                    id="cash-in-list"
+                    class="container d-flex flex-column gap-4"
+                  ></div>
+                </div>
+                <div class="col-6 px-0">
+                  <div
+                    id="cash-out-list"
+                    class="container d-flex flex-column gap-4"
+                  ></div>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-12">
+                  <button
+                    id="transaction-button"
+                    class="button-default"
+                    type="button"
+                  >
+                    Ver todas
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button
+              data-bs-toggle="modal"
+              data-bs-target="#add-transaction"
+              class="button-default button-add"
+            >
+              <i class="bi bi-plus-lg fs-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="add-transaction"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                Adicionar lançamento
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <form id="transaction-form">
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="date-transaction-input" class="form-label"
+                    >Data</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="date-transaction-input"
+                    aria-describedby="emailHelp"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="value-transaction-input" class="form-label"
+                    >Valor</label
+                  >
+                  <input
+                    type="number"
+                    step="any"
+                    class="form-control"
+                    id="value-transaction-input"
+                    required
+                  />
+                </div>
+                <div class="mb-3 d-flex gap-3">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="type-input"
+                      id="flexRadioDefault1"
+                      value="1"
+                      checked
+                    />
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      Entrada
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="type-input"
+                      id="flexRadioDefault2"
+                      value="2"
+                    />
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      Saída
+                    </label>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="description-transaction-input" class="form-label"
+                    >Descrição</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="description-transaction-input"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="button-cancel"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+                <button type="submit" class="button-default">Adicionar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./js/home.js"></script>
+  </body>
+</html>

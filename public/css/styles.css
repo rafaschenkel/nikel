@@ -1,0 +1,113 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#login {
+  background: linear-gradient(120deg, #4c79d3 44.9%, #ffffff 45%) no-repeat
+    fixed;
+}
+
+#home {
+  background: linear-gradient(120deg, #ffffff 44.9%, #4c79d3 45%) no-repeat
+    fixed;
+  overflow-x: hidden;
+}
+
+header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #bebcbc;
+  padding: 5px;
+}
+
+.color-primary {
+  color: #4e0070;
+}
+
+.color-secondary {
+  color: #4c79d3;
+}
+
+.coins {
+  position: absolute;
+  bottom: 130px;
+}
+
+.button-login {
+  width: 50%;
+  margin: 5px 25%;
+}
+
+.button-default {
+  background-color: #4e0070;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  padding: 5px 10px;
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    background-color: #4c79d3;
+  }
+}
+
+.button-cancel {
+  background-color: #ffffff;
+  color: #4e0070;
+  border-radius: 10px;
+  border: 1px solid #4e0070;
+  padding: 5px 10px;
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    background-color: #4c79d3;
+    color: #ffffff;
+    border-color: #4c79d3;
+  }
+}
+
+.button-add {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+
+  &:hover {
+    color: #4e0070;
+    background-color: #bebcbc;
+  }
+}
+
+.create-account-button {
+  color: #4e0070;
+  font-weight: 500;
+  transition: all ease-in-out 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    color: #4c79d3;
+  }
+}
+
+.info-icon {
+  font-size: 50px;
+}
+
+#menu {
+  left: auto;
+  right: 0;
+}
+
+.remove-transaction {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+}
