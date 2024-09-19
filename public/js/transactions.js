@@ -40,9 +40,7 @@ function getAllTransactions() {
                                 transactions.type === "1" ? "Entrada" : "Saída"
                               }</td>
                               <td>${transactions.description}</td>
-                              <td><button id="${
-                                "index-" + index
-                              }" class="remove-transaction"><i class="bi bi-trash-fill text-danger"></i></button></td>
+                              <td><button class="remove-transaction"><i class="bi bi-trash-fill text-danger"></i></button></td>
                             </tr>
                             
                           `;
@@ -56,19 +54,15 @@ function getAllTransactions() {
     ".remove-transaction"
   );
 
-  buttonsRemoveTransaction.forEach((button) =>
+  buttonsRemoveTransaction.forEach((button, index) =>
     button.addEventListener("click", (e) => {
-      const id = e.target.id.replace("index-", "");
-      removeTransaction(id);
+      removeTransaction(index);
     })
   );
 }
 
-function removeTransaction(id) {
-  const newTransactions = data.transactions.filter(
-    (transaction, index) => index != id
-  );
-  data.transactions = newTransactions;
+function removeTransaction(index) {
+  data.transactions.splice(index, 1);
 
   saveData(data);
 
