@@ -12,15 +12,19 @@ document.getElementById("register-form").addEventListener("submit", (e) => {
 
   if (!validaDados(email, password)) return;
 
-  saveAccount({
-    email,
-    password,
-    transactions: [],
-  });
-
-  myModal.hide();
-  e.target.reset();
-  alert("Conta criada com sucesso!");
+  axios
+    .post("http://localhost:3333/user", {
+      email,
+      password,
+    })
+    .then(function (response) {
+      myModal.hide();
+      e.target.reset();
+      alert("Conta criada com sucesso!");
+    })
+    .catch(function (error) {
+      alert(error.response.msg);
+    });
 });
 
 function validaDados(email, password) {
@@ -35,10 +39,6 @@ function validaDados(email, password) {
   }
 
   return true;
-}
-
-function saveAccount(data) {
-  localStorage.setItem(data.email, JSON.stringify(data));
 }
 
 // ==============================================================
