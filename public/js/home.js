@@ -11,19 +11,32 @@ function checkLogged() {
     logged = userSession;
   }
 
-  if (!logged) {
+  if (userSession === null && logged === null) {
     window.location.href = "index.html";
-    return;
   }
 
-  const dataUser = localStorage.getItem(logged);
-  if (dataUser) {
-    data = JSON.parse(dataUser);
-  }
+  const dataString = sessionStorage.getItem("logged");
+  data.user = JSON.parse(dataString);
 
-  getCashIn();
-  getCashOut();
-  getTotal();
+  axios
+    .get(`http://localhost:3333/transactions/${data.user.id}`, {
+      headers: {
+        email: data.user.email,
+        password: data.user.password,
+      },
+    })
+    .then(function (response) {
+      data.transactions = response.data.data;
+    })
+    .then(function (response) {
+      getCashIn();
+      getCashOut();
+      getTotal();
+    })
+    .catch(function (error) {
+      alert(`${error.response.data.msg}`);
+      window.location.href = "index.html";
+    });
 }
 
 checkLogged();
@@ -51,33 +64,45 @@ document.getElementById("transaction-form").addEventListener("submit", (e) => {
     "description-transaction-input"
   ).value;
 
-  data.transactions.unshift({
-    date,
-    value,
-    type,
-    description,
-  });
-
-  saveData(data);
+  addNewTransaction(date, value, type, description);
 
   myModal.hide();
   e.target.reset();
 
-  alert("Lançamento adicionado com sucesso!");
-
-  getCashIn();
-  getCashOut();
-  getTotal();
+  window.location.reload();
 });
 
-function saveData(data) {
-  localStorage.setItem(data.email, JSON.stringify(data));
+function addNewTransaction(date, value, type, description) {
+  axios
+    .post(
+      `http://localhost:3333/transactions/${data.user.id}`,
+      { description, type, value, date },
+      {
+        headers: {
+          email: data.user.email,
+          password: data.user.password,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then(function (response) {
+      alert("Transação adicionada com sucesso!");
+      getCashIn();
+      getCashOut();
+      getTotal();
+    })
+    .catch(function (error) {
+      alert(`${error.response.data.msg}`);
+
+      return;
+    });
 }
 
 function getCashIn() {
   const cashInList = document.getElementById("cash-in-list");
   const transactions = data.transactions;
-  const cashIn = transactions.filter((transaction) => transaction.type === "1");
+
+  const cashIn = transactions.filter((transaction) => transaction.type === 1);
 
   if (cashIn.length) {
     let cashHtml = ``;
@@ -92,9 +117,13 @@ function getCashIn() {
     for (let i = 0; i < limit; i++) {
       cashHtml += `<div class="row pe-5">
                     <div class="col">
-                      <span class="fs-2 fw-semibold">R$ ${cashIn[i].value
-                        .toFixed(2)
-                        .replace(".", ",")}</span>
+                      <span class="fs-2 fw-semibold">${Intl.NumberFormat(
+                        "pt-br",
+                        {
+                          style: "currency",
+                          currency: "BRL",
+                        }
+                      ).format(cashIn[i].value)}</span>
                       <div
                         class="container"
                       >
@@ -105,7 +134,9 @@ function getCashIn() {
                             }</span>
                           </div>
                           <div class="col-12 col-sm-6 p-0">
-                            <span class="fw-medium">${cashIn[i].date}</span>
+                            <span class="fw-medium">${new Date(
+                              cashIn[i].date
+                            ).toLocaleDateString("pt-br")}</span>
                           </div>
                         </div>
                       </div>
@@ -119,9 +150,7 @@ function getCashIn() {
 function getCashOut() {
   const cashOutList = document.getElementById("cash-out-list");
   const transactions = data.transactions;
-  const cashOut = transactions.filter(
-    (transaction) => transaction.type === "2"
-  );
+  const cashOut = transactions.filter((transaction) => transaction.type === 2);
 
   if (cashOut.length) {
     let cashHtml = ``;
@@ -136,9 +165,13 @@ function getCashOut() {
     for (let i = 0; i < limit; i++) {
       cashHtml += `<div class="row pe-5">
                     <div class="col">
-                      <span class="fs-2 fw-semibold">R$ ${cashOut[i].value
-                        .toFixed(2)
-                        .replace(".", ",")}</span>
+                      <span class="fs-2 fw-semibold">${Intl.NumberFormat(
+                        "pt-br",
+                        {
+                          style: "currency",
+                          currency: "BRL",
+                        }
+                      ).format(cashOut[i].value)}</span>
                       <div
                         class="container"
                       >
@@ -149,7 +182,9 @@ function getCashOut() {
                             }</span>
                           </div>
                           <div class="col-12 col-sm-6 p-0">
-                            <span class="fw-medium">${cashOut[i].date}</span>
+                            <span class="fw-medium">${new Date(
+                              cashOut[i].date
+                            ).toLocaleDateString("pt-br")}</span>
                           </div>
                         </div>
                       </div>
@@ -165,14 +200,15 @@ function getTotal() {
   let total = 0;
 
   transactions.forEach((transactions) => {
-    if (transactions.type === "1") {
-      total += transactions.value;
+    if (transactions.type === 1) {
+      total += Number(transactions.value);
     } else {
-      total -= transactions.value;
+      total -= Number(transactions.value);
     }
   });
 
-  document.getElementById("total").innerHTML = `R$ ${total
-    .toFixed(2)
-    .replace(".", ",")}`;
+  document.getElementById("total").innerHTML = `${Intl.NumberFormat("pt-br", {
+    style: "currency",
+    currency: "BRL",
+  }).format(total)}`;
 }

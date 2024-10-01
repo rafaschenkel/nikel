@@ -52,7 +52,6 @@ function checkLogged() {
   }
 
   if (logged) {
-    saveSession(logged, userSession);
     window.location.href = "home.html";
   }
 }
@@ -70,34 +69,26 @@ document.getElementById("login-form").addEventListener("submit", (e) => {
 });
 
 function login(email, password, checkSession) {
-  const data = getAccount(email);
-  if (data == "") {
-    alert("Verifique o e-mail ou a senha informada!");
-    return;
-  }
-  if (data.password !== password) {
-    alert("Verifique o e-mail ou a senha informada!");
-    return;
-  }
+  axios
+    .post("http://localhost:3333/login", {
+      email,
+      password,
+    })
+    .then(function (response) {
+      saveSession(response.data.data, checkSession);
 
-  saveSession(email, checkSession);
-
-  window.location.href = "home.html";
+      window.location.href = "home.html";
+    })
+    .catch(function (error) {
+      alert(`${error.response.data.msg}`);
+      return;
+    });
 }
 
 function saveSession(data, checkSession) {
   if (checkSession) {
-    localStorage.setItem("session", data);
+    localStorage.setItem("session", JSON.stringify(data));
   }
 
-  sessionStorage.setItem("logged", data);
-}
-
-function getAccount(key) {
-  const data = localStorage.getItem(key);
-  if (!data) {
-    return "";
-  }
-
-  return JSON.parse(data);
+  sessionStorage.setItem("logged", JSON.stringify(data));
 }

@@ -11,17 +11,30 @@ function checkLogged() {
     logged = userSession;
   }
 
-  if (!logged) {
+  if (userSession === null && logged === null) {
     window.location.href = "index.html";
-    return;
   }
 
-  const dataUser = localStorage.getItem(logged);
-  if (dataUser) {
-    data = JSON.parse(dataUser);
-  }
+  const dataString = sessionStorage.getItem("logged");
+  data.user = JSON.parse(dataString);
 
-  getAllTransactions();
+  axios
+    .get(`http://localhost:3333/transactions/${data.user.id}`, {
+      headers: {
+        email: data.user.email,
+        password: data.user.password,
+      },
+    })
+    .then(function (response) {
+      data.transactions = response.data.data;
+    })
+    .then(function (response) {
+      getAllTransactions();
+    })
+    .catch(function (error) {
+      alert(`${error.response.data.msg}`);
+      return;
+    });
 }
 
 function getAllTransactions() {
@@ -30,17 +43,22 @@ function getAllTransactions() {
   let transactionsHtml = ``;
 
   if (transactions.length) {
-    transactions.forEach((transactions, index) => {
+    transactions.forEach((transaction, index) => {
       transactionsHtml += `<tr>
-                            <th scope="row">${transactions.date}</th>
-                              <td>R$ ${transactions.value
-                                .toFixed(2)
-                                .replace(".", ",")}</td>
+                            <th scope="row">${new Date(
+                              transaction.date
+                            ).toLocaleDateString("pt-br")}</th>
+                              <td>${Intl.NumberFormat("pt-br", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(transaction.value)}</td>
                               <td>${
-                                transactions.type === "1" ? "Entrada" : "Saída"
+                                transaction.type === 1 ? "Entrada" : "Saída"
                               }</td>
-                              <td>${transactions.description}</td>
-                              <td><button class="remove-transaction"><i class="bi bi-trash-fill text-danger"></i></button></td>
+                              <td>${transaction.description}</td>
+                              <td><button class="remove-transaction"><i id=${
+                                transaction.id
+                              } class="bi bi-trash-fill text-danger"></i></button></td>
                             </tr>
                             
                           `;
@@ -54,19 +72,31 @@ function getAllTransactions() {
     ".remove-transaction"
   );
 
-  buttonsRemoveTransaction.forEach((button, index) =>
+  buttonsRemoveTransaction.forEach((button) =>
     button.addEventListener("click", (e) => {
-      removeTransaction(index);
+      removeTransaction(e.target.id);
     })
   );
 }
 
-function removeTransaction(index) {
-  data.transactions.splice(index, 1);
+function removeTransaction(id) {
+  axios
+    .delete(`http://localhost:3333/transactions/${data.user.id}/${id}`, {
+      headers: {
+        email: data.user.email,
+        password: data.user.password,
+        "Content-Type": "application/json",
+      },
+    })
+    .then(function (response) {
+      alert("Transação removida com sucesso!");
+      window.location.reload();
+    })
+    .catch(function (error) {
+      alert(`${error.response.data.msg}`);
 
-  saveData(data);
-
-  getAllTransactions();
+      return;
+    });
 }
 
 checkLogged();
@@ -83,24 +113,36 @@ document.getElementById("transaction-form").addEventListener("submit", (e) => {
     "description-transaction-input"
   ).value;
 
-  data.transactions.unshift({
-    date,
-    value,
-    type,
-    description,
-  });
+  addNewTransaction(date, value, type, description);
 
-  saveData(data);
-
-  getAllTransactions();
   myModal.hide();
   e.target.reset();
 
-  alert("Lançamento adicionado com sucesso!");
+  window.location.reload();
 });
 
-function saveData(data) {
-  localStorage.setItem(data.email, JSON.stringify(data));
+function addNewTransaction(date, value, type, description) {
+  axios
+    .post(
+      `http://localhost:3333/transactions/${data.user.id}`,
+      { description, type, value, date },
+      {
+        headers: {
+          email: data.user.email,
+          password: data.user.password,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then(function (response) {
+      alert("Transação adicionada com sucesso!");
+      getAllTransactions();
+    })
+    .catch(function (error) {
+      alert(`${error.response.data.msg}`);
+
+      return;
+    });
 }
 
 function logout() {
