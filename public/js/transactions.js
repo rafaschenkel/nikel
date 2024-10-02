@@ -44,24 +44,29 @@ function getAllTransactions() {
 
   if (transactions.length) {
     transactions.forEach((transaction, index) => {
-      transactionsHtml += `<tr>
-                            <th scope="row">${new Date(
-                              transaction.date
-                            ).toLocaleDateString("pt-br")}</th>
-                              <td>${Intl.NumberFormat("pt-br", {
-                                style: "currency",
-                                currency: "BRL",
-                              }).format(transaction.value)}</td>
-                              <td>${
-                                transaction.type === 1 ? "Entrada" : "Saída"
-                              }</td>
-                              <td>${transaction.description}</td>
-                              <td><button class="remove-transaction"><i id=${
-                                transaction.id
-                              } class="bi bi-trash-fill text-danger"></i></button></td>
-                            </tr>
-                            
-                          `;
+      transactionsHtml += `<tr scope="row" class="${transaction.id}">
+                            <td>${new Date(transaction.date).toLocaleDateString(
+                              "pt-br"
+                            )}</td>
+                            <td>${Intl.NumberFormat("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(transaction.value)}</td>
+                            <td>${
+                              transaction.type === 1 ? "Entrada" : "Saída"
+                            }</td>
+                            <td class="d-flex justify-content-between relative">${
+                              transaction.description
+                            }
+                              <div>
+                                <button class="remove-transaction">
+                                  <i id=${
+                                    transaction.id
+                                  } class="bi bi-trash-fill text-danger"></i>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>`;
     });
   } else {
     transactionsHtml = `<td colspan="4">Não há registros de transações !</td>`;
@@ -71,7 +76,6 @@ function getAllTransactions() {
   const buttonsRemoveTransaction = document.querySelectorAll(
     ".remove-transaction"
   );
-
   buttonsRemoveTransaction.forEach((button) =>
     button.addEventListener("click", (e) => {
       removeTransaction(e.target.id);

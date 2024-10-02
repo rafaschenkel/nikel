@@ -111,3 +111,8 @@ header {
   margin: 0;
   font-size: 16px;
 }
+
+.buttons-edit-remove {
+  position: absolute;
+  right: 5px;
+}
